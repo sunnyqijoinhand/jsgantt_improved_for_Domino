@@ -3900,7 +3900,7 @@
     }, {}, [1])(1)
 });
 
-function DomPortalUI_Gantt(gantt_div_id, gantt_format, gantt_height, gantt_language , gantt_data_json_url, gantt_config_options, before_draw_gantt, after_draw_gantt, gantt_events) {
+function DomPortalUI_Gantt(gantt_div_id, gantt_format, gantt_height, gantt_language, gantt_data_json_url, gantt_config_options, before_draw_gantt, after_draw_gantt, gantt_events) {
     if ($.trim(gantt_data_json_url) == '')
         return;
     if ($(gantt_div_id).length == 0)
@@ -3911,8 +3911,10 @@ function DomPortalUI_Gantt(gantt_div_id, gantt_format, gantt_height, gantt_langu
     }
     var g = new JSGantt.GanttChart($(gantt_div_id).get(0), gantt_format, gantt_height);
     g.setOptions(gantt_config_options);
-    g.addLang('OSgwn_gantt_language_OS', gantt_language);
-    g.setLang('OSgwn_gantt_language_OS');
+    if (gantt_language != null) {
+        g.addLang('OSgwn__gantt_language_OS', gantt_language);
+        g.setLang('OSgwn__gantt_language_OS');
+    }
     g.setDateInputFormat('yyyy-mm-dd');
     g.setFormatArr('Day', 'Week', 'Month', 'Quarter', 'Hour');
     g.setCaptionType('Duration');
