@@ -22,8 +22,12 @@
 <BODY STYLE="margin:0px;padding:0px;">
 <div style="margin:20px;">
 	<div id="OSgwnGantt2" class="gantt">
-    <div style="padding:20px;text-align:center;">Loading...</div>
-  </div>
+		<div style="padding:20px;text-align:center;">Loading...</div>
+	</div>
+	<div style="margin-top:10px;">
+		<input type=button value="Show JSON" onclick="showJSON();" /><input type=button value="Show XML" onclick="showXML();" />
+	</div>
+	<div id="OSgwnGanttData" style="border:1px solid #000000;padding:10px;height:200px;overflow:auto;"></div>
 </div>
 <script language="javascript">
 var lang_cn = {
@@ -99,6 +103,14 @@ var lang_cn = {
     'qtrs': '季'
 };
 var GANTT = null;
+function showJSON(){
+	if( GANTT==null ) return;
+	$('#OSgwnGanttData').text( GANTT.getJSONProject() );
+}
+function showXML(){
+	if( GANTT==null ) return;
+	$('#OSgwnGanttData').text( GANTT.getXMLProject() );
+}
 $(function(){
 	GANTT = $_JS_Gantt_OS( '#OSgwnGantt2', 'day' , 200 , lang_cn , './data.json', {
 		//options here
