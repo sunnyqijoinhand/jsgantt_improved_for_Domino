@@ -35,7 +35,7 @@
                     throw f.code = "MODULE_NOT_FOUND", f;
                 }
                 var l = n[o] = {
-                    exports: {}
+                    exports: {} 
                 };
                 t[o][0].call(l.exports, function(e) {
                     var n = t[o][1][e];
