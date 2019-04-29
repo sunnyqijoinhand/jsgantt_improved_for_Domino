@@ -194,6 +194,8 @@
                 this.RemoveTaskItem = task_1.RemoveTaskItem;
                 this.getXMLProject = xml_1.getXMLProject;
                 this.getXMLTask = xml_1.getXMLTask;
+                this.getJSONProject = xml_1.getJSONProject;
+                this.getJSONTask = xml_1.getJSONTask;
                 this.CalcTaskXY = function() {
                     var vID;
                     var vList = this.getList();
@@ -1058,24 +1060,51 @@
                     var vGanttContainer = $('#' + this.vDivId + '>div.gchartcontainer');
                     vGanttContainer.append('<div class="ggridfooter"></div>');
                     var vGanttObjId = this.vDivId;
-                    var vGanttHeightValue = Math.max(Math.min(this.vGanttHeight, $(window).height() - 40), 200); //scroll less than window height
                     var vGanttListHeadId = '#' + vGanttObjId + '_OSgwn_GANTT_LIST_HEAD';
                     var vGanttListBodyId = '#' + vGanttObjId + '_OSgwn_GANTT_LIST_BODY';
-                    var vGanttChartHeadId = '#' + vGanttObjId + '_OSgwn_GANTT_CHART_HEAD';
                     var vGanttChartBodyId = '#' + vGanttObjId + '_OSgwn_GANTT_CHART_BODY';
+                    var vGanttTaskTableId = '#' + vGanttObjId + '_TaskTableBody';
                     var vGanttChartTableId = '#' + vGanttObjId + '_ChartTableBody';
-                    //adjust chart body DIV width to chart's width
-                    $(vGanttChartBodyId).width($(vGanttChartTableId).width() + 20);
+                    var vGanttHeightValue = Math.max(Math.min(this.vGanttHeight, $(window).height() - 40), 200); //scroll less than window height
+                    var vGanttEditable = this.vEditable;
                     //if window's width<=768px , left and right will be two vertical parts
-                    if ($(window).width() <= 768) {
+                    if ($(window).width() <= 768 || vGanttEditable == true) {
                         $('#' + vGanttObjId + ' div.gchartcontainer div.gmainleft').css('width', '100%');
                         $('#' + vGanttObjId + ' div.gchartcontainer div.gmainright').css('width', '100%');
+                        $(vGanttListBodyId).width($('#' + vGanttObjId + ' div.gchartcontainer div.gmainleft').width());
+                        if ($(vGanttListBodyId).width() <= $(vGanttTaskTableId).width()) {
+                            $(vGanttListBodyId).width($(vGanttTaskTableId).width() + 20);
+                        }
                     } else {
                         $('#' + vGanttObjId + ' div.gchartcontainer div.gmainleft').css('width', '40%');
                         $('#' + vGanttObjId + ' div.gchartcontainer div.gmainright').css('width', '60%');
                     }
+                    //adjust chart body DIV width to chart's width
+                    $(vGanttChartBodyId).width($('#' + vGanttObjId + ' div.gchartcontainer div.gmainright').width());
+                    if ($(vGanttChartBodyId).width() <= $(vGanttChartTableId).width()) {
+                        $(vGanttChartBodyId).width($(vGanttChartTableId).width() + 20);
+                    }
+                    //window resize event
+                    $(window).on('resize', function() {
+                        if ($(window).width() <= 768 || vGanttEditable == true) {
+                            $('#' + vGanttObjId + ' div.gchartcontainer div.gmainleft').css('width', '100%');
+                            $('#' + vGanttObjId + ' div.gchartcontainer div.gmainright').css('width', '100%');
+                            $(vGanttListBodyId).width($('#' + vGanttObjId + ' div.gchartcontainer div.gmainleft').width());
+                            if ($(vGanttListBodyId).width() <= $(vGanttTaskTableId).width()) {
+                                $(vGanttListBodyId).width($(vGanttTaskTableId).width() + 20);
+                            }
+                        } else {
+                            $('#' + vGanttObjId + ' div.gchartcontainer div.gmainleft').css('width', '40%');
+                            $('#' + vGanttObjId + ' div.gchartcontainer div.gmainright').css('width', '60%');
+                        }
+                        //adjust chart body DIV width to chart's width
+                        $(vGanttChartBodyId).width($('#' + vGanttObjId + ' div.gchartcontainer div.gmainright').width());
+                        if ($(vGanttChartBodyId).width() <= $(vGanttChartTableId).width()) {
+                            $(vGanttChartBodyId).width($(vGanttChartTableId).width() + 20);
+                        }
+                    });
                     //height control
-                    var vScrollHeightValue = Math.min(vGanttHeightValue - $(vGanttListHeadId).outerHeight(true), vGanttHeightValue - $(vGanttChartHeadId).outerHeight(true));
+                    var vScrollHeightValue = Math.max(vGanttHeightValue - $(vGanttListHeadId).outerHeight(true), 150);
                     $(vGanttListBodyId).addClass('gantt-scroll-controll').css({
                         'height': vScrollHeightValue,
                         'overflow-y': 'auto',
@@ -1085,16 +1114,6 @@
                         'height': vScrollHeightValue,
                         'overflow-y': 'auto',
                         'overflow-x': 'hidden'
-                    });
-                    //window resize control
-                    $(window).on('resize', function() {
-                        if ($(window).width() <= 768) {
-                            $('#' + vGanttObjId + ' div.gchartcontainer div.gmainleft').css('width', '100%');
-                            $('#' + vGanttObjId + ' div.gchartcontainer div.gmainright').css('width', '100%');
-                        } else {
-                            $('#' + vGanttObjId + ' div.gchartcontainer div.gmainleft').css('width', '40%');
-                            $('#' + vGanttObjId + ' div.gchartcontainer div.gmainright').css('width', '60%');
-                        }
                     });
                     //scroll control
                     $(vGanttChartBodyId).scroll(function() {
@@ -2320,11 +2339,10 @@
                 var vGanttTaskTableBodyId = '#' + ganttObj.vDivId + '_TaskTableBody';
                 var vGanttListHeadId = '#' + ganttObj.vDivId + '_OSgwn_GANTT_LIST_HEAD';
                 var vGanttListBodyId = '#' + ganttObj.vDivId + '_OSgwn_GANTT_LIST_BODY';
-                var vGanttChartHeadId = '#' + ganttObj.vDivId + '_OSgwn_GANTT_CHART_HEAD';
                 var vGanttChartBodyId = '#' + ganttObj.vDivId + '_OSgwn_GANTT_CHART_BODY';
                 var vGanttHeightValue = Math.max(Math.min(ganttObj.vGanttHeight, $(window).height() - 40), 200); //scroll less than window height
                 //height control 
-                var vScrollHeightValue = Math.min(vGanttHeightValue - $(vGanttListHeadId).outerHeight(true), vGanttHeightValue - $(vGanttChartHeadId).outerHeight(true));
+                var vScrollHeightValue = vScrollHeightValue = Math.max(vGanttHeightValue - $(vGanttListHeadId).outerHeight(true), 150);
                 $(vGanttListBodyId).addClass('gantt-scroll-controll').css({
                     'height': vScrollHeightValue,
                     'overflow-y': 'auto',
@@ -3842,55 +3860,84 @@
                     }
                 }
             };
+            exports.getJSONProject = function() {
+                var vProject = '{"tasks":[';
+                for (var i = 0; i < this.vTaskList.length; i++) {
+                    if (i > 0) {
+                        vProject += ',';
+                    }
+                    vProject += this.getJSONTask(this.vTaskList[i].getOriginalID());
+                }
+                vProject += ']}';
+                return vProject;
+            };
+            exports.getJSONTask = function(pID) {
+                var i = 0;
+                var vIdx = -1;
+                var json = {};
+                var vOutFrmt = utils_1.parseDateFormatStr(this.getDateInputFormat() + ' HH:MI:00');
+                for (i = 0; i < this.vTaskList.length; i++) {
+                    if (this.vTaskList[i].getOriginalID() == pID) {
+                        vIdx = i;
+                        break;
+                    }
+                }
+                if (vIdx >= 0 && vIdx < this.vTaskList.length) {
+                    json['pID'] = this.vTaskList[vIdx].getOriginalID();
+                    json['pName'] = this.vTaskList[vIdx].getName();
+                    json['pStart'] = utils_1.formatDateStr(this.vTaskList[vIdx].getStart(), vOutFrmt, this.vLangs[this.vLang]);
+                    json['pEnd'] = utils_1.formatDateStr(this.vTaskList[vIdx].getEnd(), vOutFrmt, this.vLangs[this.vLang]);
+                    json['pClass'] = this.vTaskList[vIdx].getClass();
+                    json['pLink'] = this.vTaskList[vIdx].getLink();
+                    json['pMile'] = this.vTaskList[vIdx].getMile();
+                    json['pRes'] = this.vTaskList[vIdx].getResource();
+                    json['pComp'] = this.vTaskList[vIdx].getCompVal();
+                    json['pCost'] = this.vTaskList[vIdx].getCost();
+                    json['pGroup'] = this.vTaskList[vIdx].getGroup();
+                    json['pParent'] = this.vTaskList[vIdx].getParent();
+                    json['pOpen'] = this.vTaskList[vIdx].getOpen();
+                    json['pDepend'] = this.vTaskList[vIdx].getDepend().join(',');
+                    json['pCaption'] = this.vTaskList[vIdx].getCaption();
+                    json['pNotes'] = this.vTaskList[vIdx].getNotes().innerHTML;
+                }
+                return JSON.stringify(json);
+            };
             exports.getXMLProject = function() {
                 var vProject = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
                 for (var i = 0; i < this.vTaskList.length; i++) {
-                    vProject += this.getXMLTask(i, true);
+                    vProject += this.getXMLTask(this.vTaskList[i].getOriginalID());
                 }
                 vProject += '</project>';
                 return vProject;
             };
-            exports.getXMLTask = function(pID, pIdx) {
+            exports.getXMLTask = function(pID) {
                 var i = 0;
                 var vIdx = -1;
                 var vTask = '';
-                var vOutFrmt = utils_1.parseDateFormatStr(this.getDateInputFormat() + ' HH:MI');
-                if (pIdx === true)
-                    vIdx = pID;
-                else {
-                    for (i = 0; i < this.vTaskList.length; i++) {
-                        if (this.vTaskList[i].getID() == pID) {
-                            vIdx = i;
-                            break;
-                        }
+                var vOutFrmt = utils_1.parseDateFormatStr(this.getDateInputFormat() + ' HH:MI:00');
+                for (i = 0; i < this.vTaskList.length; i++) {
+                    if (this.vTaskList[i].getOriginalID() == pID) {
+                        vIdx = i;
+                        break;
                     }
                 }
                 if (vIdx >= 0 && vIdx < this.vTaskList.length) {
                     /* Simplest way to return case sensitive node names is to just build a string */
                     vTask = '<task>';
-                    vTask += '<pID>' + this.vTaskList[vIdx].getID() + '</pID>';
+                    vTask += '<pID>' + this.vTaskList[vIdx].getOriginalID() + '</pID>';
                     vTask += '<pName>' + this.vTaskList[vIdx].getName() + '</pName>';
                     vTask += '<pStart>' + utils_1.formatDateStr(this.vTaskList[vIdx].getStart(), vOutFrmt, this.vLangs[this.vLang]) + '</pStart>';
                     vTask += '<pEnd>' + utils_1.formatDateStr(this.vTaskList[vIdx].getEnd(), vOutFrmt, this.vLangs[this.vLang]) + '</pEnd>';
                     vTask += '<pClass>' + this.vTaskList[vIdx].getClass() + '</pClass>';
                     vTask += '<pLink>' + this.vTaskList[vIdx].getLink() + '</pLink>';
                     vTask += '<pMile>' + this.vTaskList[vIdx].getMile() + '</pMile>';
-                    if (this.vTaskList[vIdx].getResource() != '\u00A0')
-                        vTask += '<pRes>' + this.vTaskList[vIdx].getResource() + '</pRes>';
+                    vTask += '<pRes>' + this.vTaskList[vIdx].getResource() + '</pRes>';
                     vTask += '<pComp>' + this.vTaskList[vIdx].getCompVal() + '</pComp>';
                     vTask += '<pCost>' + this.vTaskList[vIdx].getCost() + '</pCost>';
                     vTask += '<pGroup>' + this.vTaskList[vIdx].getGroup() + '</pGroup>';
                     vTask += '<pParent>' + this.vTaskList[vIdx].getParent() + '</pParent>';
                     vTask += '<pOpen>' + this.vTaskList[vIdx].getOpen() + '</pOpen>';
-                    vTask += '<pDepend>';
-                    var vDepList = this.vTaskList[vIdx].getDepend();
-                    for (i = 0; i < vDepList.length; i++) {
-                        if (i > 0)
-                            vTask += ',';
-                        if (vDepList[i] > 0)
-                            vTask += vDepList[i] + this.vTaskList[vIdx].getDepType()[i];
-                    }
-                    vTask += '</pDepend>';
+                    vTask += '<pDepend>' + this.vTaskList[vIdx].getDepend().join(',') + '</pDepend>';
                     vTask += '<pCaption>' + this.vTaskList[vIdx].getCaption() + '</pCaption>';
                     var vTmpFrag = document.createDocumentFragment();
                     var vTmpDiv = this.newNode(vTmpFrag, 'div', null, null, this.vTaskList[vIdx].getNotes().innerHTML);
