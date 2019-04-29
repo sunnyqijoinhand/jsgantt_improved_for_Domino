@@ -35,7 +35,7 @@
                     throw f.code = "MODULE_NOT_FOUND", f;
                 }
                 var l = n[o] = {
-                    exports: {} 
+                    exports: {}
                 };
                 t[o][0].call(l.exports, function(e) {
                     var n = t[o][1][e];
@@ -3524,17 +3524,17 @@
                     key = 'default';
                 }
                 key += '';
-                var hash = 1234567;
+                var hash = 5831;
                 for (var i = 0; i < key.length; i++) {
                     if (key.charCodeAt) {
-                        hash = (hash << 8) + hash + key.charCodeAt(i);
+                        hash = (hash << 5) + hash + key.charCodeAt(i);
                     }
                     hash = hash & hash;
                 }
                 return (hash >>> 0);
             };
             exports.hashKey = function(key) {
-                return this.hashString(key) % 1000000 + 90000000;
+                return this.hashString(key) % 100000000 + 900000000;
             };
             exports.criticalPath = function(tasks) {
                 var path = {};
