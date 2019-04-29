@@ -100,7 +100,8 @@ var lang_cn = {
 };
 var GANTT = null;
 $(function(){
-	GANTT = DomPortalUI_Gantt( '#OSgwnGantt2', 'day' , 200 , lang_cn , './data.json', {
+	GANTT = $_JS_Gantt_OS( '#OSgwnGantt2', 'day' , 200 , lang_cn , './data.json', {
+		//options here
 	} , function(gantt){
 		//before draw
 	} , function(gantt){
