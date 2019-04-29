@@ -1103,14 +1103,21 @@
                     $(vGanttListBodyId).scroll(function() {
                         $(vGanttChartBodyId).scrollTop($(this).scrollTop());
                     });
+                    //adjust task name width when DRAW
+                    var vGanttTaskTableHeadId = '#' + this.vDivId + '_TaskTableHead';
+                    var vGanttTaskTableBodyId = '#' + this.vDivId + '_TaskTableBody';
+                    $(vGanttTaskTableHeadId + ' td.gtaskname div').css({
+                        'width': $(vGanttTaskTableBodyId + ' td.gtaskname').eq(0).width(),
+                        'max-width': $(vGanttTaskTableBodyId + ' td.gtaskname').eq(0).width()
+                    });
                     /*
                     // task name width control moved to folder_click listener
                     var vGanttTaskTableHeadId = '#' + this.vDivId + '_TaskTableHead';
                     var vGanttTaskTableBodyId = '#' + this.vDivId + '_TaskTableBody';
                     setInterval(function() {
                         $(vGanttTaskTableHeadId + ' td.gtaskname div').css({
-                    	'width': $(vGanttTaskTableBodyId + ' td.gtaskname').eq(0).width(),
-                    	'max-width': $(vGanttTaskTableBodyId + ' td.gtaskname').eq(0).width()
+                    		'width': $(vGanttTaskTableBodyId + ' td.gtaskname').eq(0).width(),
+                    		'max-width': $(vGanttTaskTableBodyId + ' td.gtaskname').eq(0).width()
                         });
                     }, 50);
                     */
@@ -3900,7 +3907,7 @@
     }, {}, [1])(1)
 });
 
-function DomPortalUI_Gantt(gantt_div_id, gantt_format, gantt_height, gantt_language, gantt_data_json_url, gantt_config_options, before_draw_gantt, after_draw_gantt, gantt_events) {
+function $_JS_Gantt_OS(gantt_div_id, gantt_format, gantt_height, gantt_language, gantt_data_json_url, gantt_config_options, before_draw_gantt, after_draw_gantt, gantt_events) {
     if ($.trim(gantt_data_json_url) == '')
         return;
     if ($(gantt_div_id).length == 0)
@@ -3910,7 +3917,7 @@ function DomPortalUI_Gantt(gantt_div_id, gantt_format, gantt_height, gantt_langu
         gantt_format = 'day';
     }
     var g = new JSGantt.GanttChart($(gantt_div_id).get(0), gantt_format, gantt_height);
-    g.setOptions(gantt_config_options);
+    if (gantt_config_options != null) g.setOptions(gantt_config_options);
     if (gantt_language != null) {
         g.addLang('OSgwn__gantt_language_OS', gantt_language);
         g.setLang('OSgwn__gantt_language_OS');
@@ -3918,11 +3925,19 @@ function DomPortalUI_Gantt(gantt_div_id, gantt_format, gantt_height, gantt_langu
     g.setDateInputFormat('yyyy-mm-dd');
     g.setFormatArr('Day', 'Week', 'Month', 'Quarter', 'Hour');
     g.setCaptionType('Duration');
-    g.setEvents(gantt_events);
+    if (gantt_events != null) g.setEvents(gantt_events);
     JSGantt.parseJSON($.trim(gantt_data_json_url), g);
-    before_draw_gantt(g);
+    if (before_draw_gantt != null) before_draw_gantt(g);
     g.Draw();
-    after_draw_gantt(g);
+    if (after_draw_gantt != null) after_draw_gantt(g);
     return g;
+};
+
+function DomPortalUI_Gantt(gantt_div_id, gantt_format, gantt_height, gantt_data_json_url, gantt_config_options, gantt_events) {
+    if (typeof(DomPortalUI_LangPackStrings['gantt-lang']) != 'undefined') {
+        return $_JS_Gantt_OS(gantt_div_id, gantt_format, gantt_height, DomPortalUI_LangPackStrings['gantt-lang'], gantt_data_json_url, gantt_config_options, null, null, gantt_events);
+    } else {
+        return $_JS_Gantt_OS(gantt_div_id, gantt_format, gantt_height, null, gantt_data_json_url, gantt_config_options, null, null, gantt_events);
+    }
 };
 // ------ END ------
