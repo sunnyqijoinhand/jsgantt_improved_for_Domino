@@ -3524,20 +3524,17 @@
                     key = 'default';
                 }
                 key += '';
-                var hash = 5381;
+                var hash = 1234567;
                 for (var i = 0; i < key.length; i++) {
                     if (key.charCodeAt) {
-                        // tslint:disable-next-line:no-bitwise
-                        hash = (hash << 5) + hash + key.charCodeAt(i);
+                        hash = (hash << 8) + hash + key.charCodeAt(i);
                     }
-                    // tslint:disable-next-line:no-bitwise
                     hash = hash & hash;
                 }
-                // tslint:disable-next-line:no-bitwise
-                return hash >>> 0;
+                return (hash >>> 0);
             };
             exports.hashKey = function(key) {
-                return this.hashString(key) % 10000;
+                return this.hashString(key) % 1000000 + 90000000;
             };
             exports.criticalPath = function(tasks) {
                 var path = {};
