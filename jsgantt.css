@@ -121,9 +121,9 @@ td.gspanning {
     height: 20px;
     white-space: nowrap;
     border: #efefef 1px solid;
-    min-width: 120px;
-    width: 120px;
-    max-width: 120px;
+    min-width: 150px;
+    width: 150px;
+    max-width: 150px;
 }
 
 .gresource div,
