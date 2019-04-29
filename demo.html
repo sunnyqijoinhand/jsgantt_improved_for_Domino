@@ -1,0 +1,51 @@
+
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>SecurDoc</TITLE>
+<META NAME="viewport" CONTENT="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<META NAME="mobile-web-app-capable" content="yes">
+<META NAME="apple-mobile-web-app-capable" content="yes">
+<META CHARSET="UTF-8">
+<META HTTP-EQUIV="X-UA-Compatible" CONTENT="IE=edge,chrome=1">
+<META NAME="renderer" CONTENT="webkit">
+<SCRIPT TYPE="text/javascript" SRC="/siteman.nsf/jquery2/$FILE/jquery.min.js?open&t=src"></SCRIPT>
+<link type="text/css" rel="stylesheet" media="all" href="./jsgantt.css">
+<script language="javascript" type="text/javascript" src="./jsgantt.js"></script>
+</HEAD>
+<BODY STYLE="margin:0px;padding:0px;">
+<div style="margin:20px;">
+	<div id="OSgwnGantt2" class="gantt">
+    <div style="padding:20px;text-align:center;"><img src="/siteman.nsf/data_loading.gif" /></div>
+  </div>
+</div>
+<script language="javascript">
+var GANTT = null;
+$(function(){
+	GANTT = DomPortalUI_Gantt( '#OSgwnGantt2', 'day' , 300 , './data.json', {
+	} , function(gantt){
+		//before draw
+	} , function(gantt){
+		//after draw
+	},{
+		taskname:function(task){
+			console.log(task);
+			alert( task.getID() + ' , ' + task.getName() + ' , ' + task.getOriginalID() );
+		}
+		,start:function(task){
+			$('#OSgwnGantt2>div.gchartcontainer>div.gmainright').scrollLeft( task.getStartX()-50 );
+		}
+		,planstart:function(task){
+			$('#OSgwnGantt2>div.gchartcontainer>div.gmainright').scrollLeft( task.getStartX()-50 );
+		}
+		,end:function(task){
+			$('#OSgwnGantt2>div.gchartcontainer>div.gmainright').scrollLeft( task.getEndX()-50 );
+		}
+		,planend:function(task){
+			$('#OSgwnGantt2>div.gchartcontainer>div.gmainright').scrollLeft( task.getEndX()-50 );
+		}
+	});
+});
+</script>
+</BODY>
+</HTML>
