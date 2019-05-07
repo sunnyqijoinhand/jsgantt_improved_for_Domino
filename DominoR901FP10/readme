@@ -1,3 +1,6 @@
+Domino R9.0.1 FP10 !!!!
+This Domino web app needs JVM 1.8 to run !!!
+
 1. extract domino-jvm-lib-ext.zip and copy *.jar to <Domino>/jvm/lib/ext 
 2. copy demo.mpp to D:\ (Or any directiry you want , you must modify agent read.mpp.fiel.do if not D:\demo.mpp)
 3. copy gantt.nsf to you domino server and sign gantt.nsf
