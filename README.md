@@ -11,3 +11,10 @@ jQuery 1.8+ required.
      4-1) .getJSONProject()
      4-2) TaskItem.getOriginalID(),TaskItem.getParentOriginal()....
 </p>
+<p>
+  <h1 color=red>Opensource</h1><br />
+  <p color=red>
+  You should open your source codes to everyone if you use this project in your project！
+  </p>
+</p>
+
